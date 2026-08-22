@@ -1,0 +1,75 @@
+FINAL SETUP — DO THIS IN ORDER
+
+1. UNZIP
+Extract this ZIP on your computer.
+
+2. TEST LOCALLY (optional)
+Open index.html. The app can create PDFs and keep history in the browser using localStorage even before Supabase is configured.
+
+3. CREATE SUPABASE
+Open https://supabase.com/ and create a project.
+
+4. CREATE DATABASE
+In Supabase -> SQL Editor, open supabase_schema.sql from this package.
+Paste everything and click Run.
+This creates the bills table and Row Level Security policies.
+
+5. CREATE LOGIN
+Supabase -> Authentication -> Users -> Add user.
+Create the email/password account for the bill system.
+
+6. GET SUPABASE API VALUES
+Supabase -> Project Settings -> API.
+Copy:
+- Project URL
+- Publishable key (or the legacy anon key if that is what your project exposes)
+
+Never put a service_role/secret key in the website.
+
+7. CONFIGURE
+Open config.js and replace the empty values:
+window.BILL_APP_CONFIG = {
+  SUPABASE_URL: "https://YOUR_PROJECT_REF.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY: "YOUR_PUBLISHABLE_KEY"
+};
+
+8. DEPLOY
+Go to https://app.netlify.com/drop
+Drag the COMPLETE folder (including config.js) into Netlify Drop.
+Open the URL Netlify gives you.
+
+9. SIGN IN
+Use the Supabase user created in step 5.
+
+10. TEST SAMPLE
+Date: 22/08/2026
+Firm / Party Name: M/s R.B. Construction
+Assessment Year: 2025-2026
+Income Tax / Assessment: 2500
+Appeal: 1500
+Drafting: 1000
+Miscellaneous: 500
+Expected Total: 5500
+
+11. CHECK
+- Logo appears centered below Cash Memo/Bill.
+- Logo is navy and approximately 72 x 72 px in the master.
+- Party name is 22 pt bold.
+- Date is 16 pt bold.
+- Assessment Year is 22 pt bold.
+- Amounts and Total are 18 pt bold.
+- PDF downloads.
+- Share / WhatsApp opens the native share sheet on supported phones.
+- Bill is stored in Bill History.
+- Bill count increases.
+- Search works.
+- Old PDF can be re-downloaded.
+- Delete works.
+
+12. PHONE
+Open the Netlify URL on the phone.
+Use browser "Add to Home Screen" if desired. The site is PWA-ready.
+
+IMPORTANT
+The Supabase publishable/anon key is intended for frontend use when RLS is correctly configured.
+Never expose a service_role or secret key.

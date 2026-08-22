@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102957">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sanjay Kumar Gupta Bill Generator">
+<title>Sanjay Kumar Gupta — Bill Generator</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--navy:#102957;--bg:#f4f6fa;--line:#d8deea;--muted:#697386;--danger:#b42318;--ok:#087443}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#152033}
+main{width:min(900px,100%);margin:auto;padding:14px}
+header{background:var(--navy);color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}
+header h1{margin:0;font-size:22px}header p{margin:5px 0 0;font-size:13px;opacity:.9}
+.topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.nav{display:flex;gap:8px}.nav button{min-width:120px}
+.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 5px 24px #10295712;margin-bottom:12px}
+h2{font-size:17px;color:var(--navy);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:750;margin-bottom:6px}
+input{width:100%;height:46px;border:1px solid var(--line);border-radius:9px;padding:0 12px;font-size:16px;background:#fff}
+.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:1fr 170px;align-items:center;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}.name{padding:14px;font-size:14px;font-weight:650}.amount{border:0;border-left:1px solid var(--line);border-radius:0}
+.total{display:flex;justify-content:space-between;padding:17px 2px;font-size:19px;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{height:48px;border:0;border-radius:10px;background:var(--navy);color:#fff;font-size:14px;font-weight:800;padding:0 14px;cursor:pointer}
+button.secondary{background:#edf1f7;color:var(--navy)}button.danger{background:#fff0ee;color:var(--danger)}button:disabled{opacity:.55;cursor:not-allowed}
+.status{text-align:center;min-height:20px;margin-top:10px;font-size:13px}.status.ok{color:var(--ok)}.status.err{color:var(--danger)}
+.small{font-size:12px;color:var(--muted);line-height:1.5}.pill{background:#edf1f7;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750}
+.hidden{display:none!important}.history-head{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}
+.search{max-width:320px}.tablewrap{overflow:auto}.history{width:100%;border-collapse:collapse;font-size:13px}
+.history th,.history td{padding:10px 7px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.history th{color:var(--navy)}
+.row-actions{display:flex;gap:6px}.row-actions button{height:34px;padding:0 9px;font-size:12px}
+.login{max-width:450px;margin:30px auto}.logout{margin-left:auto}
+@media(max-width:620px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.row{grid-template-columns:1fr 130px}.actions{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.logout{margin-left:0}.history-head{align-items:stretch;flex-direction:column}.search{max-width:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Sanjay Kumar Gupta — Bill Generator</h1>
+  <p>Final approved bill format • PDF • WhatsApp • bill history</p>
+</header>
+
+<section id="loginCard" class="card login">
+  <h2>Sign in</h2>
+  <div class="grid">
+    <div class="full"><label>Email</label><input id="loginEmail" type="email" autocomplete="email"></div>
+    <div class="full"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
+  </div>
+  <button id="loginBtn" style="width:100%;margin-top:12px">SIGN IN</button>
+  <div id="loginStatus" class="status"></div>
+  <p class="small">Use the admin/user account created in Supabase Authentication.</p>
+</section>
+
+<section id="appShell" class="hidden">
+  <div class="topbar">
+    <div class="nav">
+      <button id="newBtn">New Bill</button>
+      <button id="historyBtn" class="secondary">Bill History</button>
+    </div>
+    <button id="logoutBtn" class="secondary logout">Sign Out</button>
+  </div>
+
+  <section id="newSection" class="card">
+    <h2>Bill Details</h2>
+    <div class="grid">
+      <div><label>Date</label><input id="date" inputmode="numeric"></div>
+      <div><label>Assessment Year</label><input id="assessmentYear" placeholder="2025-2026"></div>
+      <div class="full"><label>Firm / Party Name</label><input id="partyName" placeholder="M/s R.B. Construction"></div>
+    </div>
+
+    <h2 style="margin-top:24px">Amounts</h2>
+    <div class="rows">
+      <div class="row"><div class="name">Income Tax / Assessment</div><input id="incomeTax" class="amount" type="number" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="row"><div class="name">Appeal</div><input id="appeal" class="amount" type="number" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="row"><div class="name">Drafting</div><input id="drafting" class="amount" type="number" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="row"><div class="name">Miscellaneous</div><input id="miscellaneous" class="amount" type="number" min="0" step="0.01" inputmode="decimal"></div>
+    </div>
+
+    <div class="total"><span>Total</span><span id="total">₹0.00</span></div>
+    <div class="actions">
+      <button id="proceedBtn">PROCEED — DOWNLOAD PDF</button>
+      <button id="shareBtn" class="secondary" disabled>SHARE / WHATSAPP</button>
+    </div>
+    <div id="billStatus" class="status"></div>
+    <p class="small">
+      Final PDF data sizes: Party 22 pt Bold • Date 16 pt Bold • Assessment Year 22 pt Bold •
+      Amounts 18 pt Bold • Total 18 pt Bold. The advocate logo is centered below “Cash Memo/Bill”,
+      approximately 72 × 72 px in the master layout (~40 pt / ~14 mm).
+    </p>
+  </section>
+
+  <section id="historySection" class="card hidden">
+    <div class="history-head">
+      <div><h2 style="margin-bottom:5px">Bill History</h2><span id="billCount" class="pill">0 bills</span></div>
+      <div><label for="searchBox">Search</label><input id="searchBox" class="search" placeholder="Party, date, assessment year"></div>
+    </div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table class="history">
+        <thead><tr><th>#</th><th>Date</th><th>Party</th><th>Assessment</th><th>Total</th><th>Actions</th></tr></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <div id="historyStatus" class="status"></div>
+  </section>
+</section>
+</main>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+const CONFIG=window.BILL_APP_CONFIG||{SUPABASE_URL:"",SUPABASE_PUBLISHABLE_KEY:""};
+const configured=CONFIG.SUPABASE_URL.startsWith("https://") &&
+                 !CONFIG.SUPABASE_URL.includes("YOUR_") &&
+                 CONFIG.SUPABASE_PUBLISHABLE_KEY &&
+                 !CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("YOUR_");
+const sb=configured?window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_PUBLISHABLE_KEY):null;
+const $=id=>document.getElementById(id);
+let currentUser=null,lastBlob=null,lastName="Bill.pdf",historyCache=[];
+
+function today(){const d=new Date();return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()}
+$("date").value=today();
+
+function total(){return["incomeTax","appeal","drafting","miscellaneous"].reduce((s,id)=>s+(Number($(id).value)||0),0)}
+function updateTotal(){$("total").textContent="₹"+total().toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}
+document.querySelectorAll(".amount").forEach(x=>x.addEventListener("input",updateTotal));updateTotal();
+
+function safeName(s){return(s||"Bill").replace(/[^a-z0-9._-]+/gi,"_").slice(0,70)||"Bill"}
+function status(el,msg,ok=false){el.textContent=msg;el.className="status "+(ok?"ok":"err")}
+function clearStatus(el){el.textContent="";el.className="status"}
+
+async function signIn(){
+  if(!sb){status($("loginStatus"),"Supabase is not configured. Complete the setup steps in SETUP_STEP_BY_STEP.txt.");return}
+  const email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+  if(!email||!password){status($("loginStatus"),"Enter email and password.");return}
+  $("loginBtn").disabled=true;clearStatus($("loginStatus"));
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  $("loginBtn").disabled=false;
+  if(error){status($("loginStatus"),error.message);return}
+  currentUser=data.user;showApp();
+}
+async function signOut(){if(sb)await sb.auth.signOut();currentUser=null;hideApp()}
+function showApp(){$("loginCard").classList.add("hidden");$("appShell").classList.remove("hidden");loadHistory()}
+function hideApp(){$("appShell").classList.add("hidden");$("loginCard").classList.remove("hidden")}
+$("loginBtn").onclick=signIn;$("logoutBtn").onclick=signOut;
+
+if(sb){
+  sb.auth.getSession().then(({data})=>{if(data.session){currentUser=data.session.user;showApp()}});
+  sb.auth.onAuthStateChange((_e,s)=>{currentUser=s?.user||null;if(currentUser)showApp();else hideApp()});
+}
+
+async function buildPDF(b){
+  const {PDFDocument,StandardFonts,rgb}=PDFLib;
+  const bytes=await fetch("assets/master_bill_final.jpg",{cache:"no-store"}).then(r=>r.arrayBuffer());
+  const pdf=await PDFDocument.create(),jpg=await pdf.embedJpg(bytes);
+  const A4W=595.27559055,A4H=841.88976378;
+  const scale=Math.min(A4W/jpg.width,A4H/jpg.height);
+  const pageW=jpg.width*scale,pageH=jpg.height*scale;
+  const page=pdf.addPage([pageW,pageH]);
+  page.drawImage(jpg,{x:0,y:0,width:pageW,height:pageH});
+
+  // Coordinates refer to the master bill's 1024px × 1534px layout.
+  // Coordinates are scaled; font sizes remain true PDF points.
+  const font=await pdf.embedFont(StandardFonts.TimesRomanBold);
+  const color=rgb(.05,.12,.32);
+  const F={
+    party:{x:320,y:512,size:22,align:"left"},
+    date:{x:955,y:451,size:16,align:"right"},
+    assessment:{x:695,y:670,size:22,align:"center"},
+    incomeTax:{x:965,y:827,size:18,align:"right"},
+    appeal:{x:965,y:982,size:18,align:"right"},
+    drafting:{x:965,y:1137,size:18,align:"right"},
+    miscellaneous:{x:965,y:1289,size:18,align:"right"},
+    total:{x:965,y:1360,size:18,align:"right"}
+  };
+  function put(text,key){
+    const f=F[key],s=String(text),size=f.size,w=font.widthOfTextAtSize(s,size);
+    let x=f.x*scale;
+    if(f.align==="right")x-=w;
+    if(f.align==="center")x-=w/2;
+    page.drawText(s,{x,y:pageH-f.y*scale,size,font,color});
+  }
+  put(b.date,"date");put(b.partyName,"party");put(b.assessmentYear,"assessment");
+  [["incomeTax",b.incomeTax],["appeal",b.appeal],["drafting",b.drafting],["miscellaneous",b.miscellaneous]]
+    .forEach(([k,n])=>{if(Number(n))put(Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}),k)});
+  put(Number(b.total).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}),"total");
+  return new Blob([await pdf.save()],{type:"application/pdf"});
+}
+
+async function saveBill(b){
+  // Fallback storage works if Supabase has not been configured yet.
+  if(!sb||!currentUser){
+    const local=JSON.parse(localStorage.getItem("bill_history")||"[]");
+    local.unshift({...b,id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),created_at:new Date().toISOString()});
+    localStorage.setItem("bill_history",JSON.stringify(local));
+    return;
+  }
+  const {error}=await sb.from("bills").insert({
+    user_id:currentUser.id,bill_date:b.date,party_name:b.partyName,
+    assessment_year:b.assessmentYear,income_tax:b.incomeTax,appeal:b.appeal,
+    drafting:b.drafting,miscellaneous:b.miscellaneous,total:b.total
+  });
+  if(error)throw error;
+}
+
+async function loadHistory(){
+  try{
+    if(sb&&currentUser){
+      const {data,error}=await sb.from("bills").select("*").order("created_at",{ascending:false});
+      if(error)throw error;historyCache=data||[];
+    }else historyCache=JSON.parse(localStorage.getItem("bill_history")||"[]");
+    renderHistory();
+  }catch(e){status($("historyStatus"),"Could not load bill history: "+e.message)}
+}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function renderHistory(){
+  const q=$("searchBox").value.trim().toLowerCase();
+  const filtered=historyCache.filter(b=>{
+    const p=b.party_name||b.party,d=b.bill_date||b.date,a=b.assessment_year||b.assessment;
+    return [p,d,a].join(" ").toLowerCase().includes(q);
+  });
+  $("billCount").textContent=historyCache.length+" bill"+(historyCache.length===1?"":"s");
+  $("historyBody").innerHTML=filtered.map((b,i)=>{
+    const p=b.party_name||b.party,d=b.bill_date||b.date,a=b.assessment_year||b.assessment;
+    return `<tr><td>${i+1}</td><td>${escapeHtml(d)}</td><td>${escapeHtml(p)}</td><td>${escapeHtml(a)}</td><td>₹${Number(b.total).toLocaleString("en-IN",{minimumFractionDigits:2})}</td><td class="row-actions"><button class="secondary" onclick="redownload('${b.id}')">PDF</button><button class="danger" onclick="deleteBill('${b.id}')">Delete</button></td></tr>`;
+  }).join("")||'<tr><td colspan="6">No bills found.</td></tr>';
+}
+$("searchBox").addEventListener("input",renderHistory);
+
+function normalize(b){
+  return {
+    date:b.bill_date||b.date,partyName:b.party_name||b.party,assessmentYear:b.assessment_year||b.assessment,
+    incomeTax:Number(b.income_tax??b.income??0),appeal:Number(b.appeal||0),
+    drafting:Number(b.drafting||0),miscellaneous:Number(b.miscellaneous??b.misc??0),total:Number(b.total||0)
+  };
+}
+async function redownload(id){
+  const b=historyCache.find(x=>String(x.id)===String(id));if(!b)return;
+  const d=normalize(b),blob=await buildPDF(d),name=`Bill_${safeName(d.partyName)}_${d.date.replaceAll("/","-")}.pdf`;
+  const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),3000);
+}
+window.redownload=redownload;
+
+async function deleteBill(id){
+  if(!confirm("Delete this bill from history?"))return;
+  try{
+    if(sb&&currentUser){
+      const {error}=await sb.from("bills").delete().eq("id",id);if(error)throw error;
+    }else{
+      const local=JSON.parse(localStorage.getItem("bill_history")||"[]").filter(x=>String(x.id)!==String(id));
+      localStorage.setItem("bill_history",JSON.stringify(local));
+    }
+    await loadHistory();
+  }catch(e){status($("historyStatus"),"Could not delete bill: "+e.message)}
+}
+window.deleteBill=deleteBill;
+
+$("proceedBtn").onclick=async()=>{
+  const err=!$("date").value.trim()?"Enter Date.":
+    !$("partyName").value.trim()?"Enter Firm / Party Name.":
+    !$("assessmentYear").value.trim()?"Enter Assessment Year.":
+    total()<=0?"Enter at least one amount.":"";
+  if(err){status($("billStatus"),err);return}
+  $("proceedBtn").disabled=true;clearStatus($("billStatus"));$("billStatus").textContent="Generating PDF…";
+  try{
+    const b={
+      date:$("date").value.trim(),partyName:$("partyName").value.trim(),assessmentYear:$("assessmentYear").value.trim(),
+      incomeTax:Number($("incomeTax").value)||0,appeal:Number($("appeal").value)||0,
+      drafting:Number($("drafting").value)||0,miscellaneous:Number($("miscellaneous").value)||0
+    };
+    b.total=b.incomeTax+b.appeal+b.drafting+b.miscellaneous;
+    lastBlob=await buildPDF(b);
+    lastName=`Bill_${safeName(b.partyName)}_${b.date.replaceAll("/","-")}.pdf`;
+    const u=URL.createObjectURL(lastBlob),a=document.createElement("a");a.href=u;a.download=lastName;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+    await saveBill(b);await loadHistory();
+    $("shareBtn").disabled=false;status($("billStatus"),"PDF generated and bill saved successfully.",true);
+  }catch(e){console.error(e);status($("billStatus"),"Could not complete the bill: "+e.message)}
+  finally{$("proceedBtn").disabled=false}
+};
+
+$("shareBtn").onclick=async()=>{
+  if(!lastBlob)return;
+  const file=new File([lastBlob],lastName,{type:"application/pdf"});
+  if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+    try{await navigator.share({files:[file],title:lastName,text:"Bill PDF"});return}catch(e){}
+  }
+  window.open("https://wa.me/?text="+encodeURIComponent("Bill PDF: "+lastName),"_blank");
+};
+$("newBtn").onclick=()=>{$("newSection").classList.remove("hidden");$("historySection").classList.add("hidden")};
+$("historyBtn").onclick=()=>{$("newSection").classList.add("hidden");$("historySection").classList.remove("hidden");loadHistory()};
+</script>
+</body>
+</html>
