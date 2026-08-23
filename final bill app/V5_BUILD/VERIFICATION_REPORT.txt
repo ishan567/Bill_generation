@@ -1,0 +1,8 @@
+FINAL V19 — REMOVE BOTTOM HISTORY NEW BILL ONLY
+
+Based on working V18, only one change was made:
+- Removed the NEW BILL button at the bottom of the Bill History page.
+- Removed only its dedicated event binding.
+- Kept the working homepage NEW BILL button and startNewBill behavior unchanged.
+- No PDF, login, search, history, amount formatting, or other functionality was changed.
+- JavaScript syntax check passes.
