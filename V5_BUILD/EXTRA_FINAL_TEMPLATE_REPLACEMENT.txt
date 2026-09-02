@@ -1,6 +1,0 @@
-Template update:
-The previous Blank 4 template has been replaced with the user-provided "Extra Final.pdf".
-This PDF is now the authoritative blank template for the application.
-The generator raster master (assets/master_bill_final.jpg) was regenerated directly from Extra Final.pdf.
-Bundled sample/reference PDFs were regenerated from the same Extra Final.pdf using the existing saved coordinates and center-aligned amount positions.
-No application functionality or saved coordinates were otherwise changed.
