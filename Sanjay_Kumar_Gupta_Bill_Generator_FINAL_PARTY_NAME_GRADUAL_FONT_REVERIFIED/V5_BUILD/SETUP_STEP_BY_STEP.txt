@@ -1,0 +1,25 @@
+FINAL V7 — SIGN-IN EXECUTION FIX
+
+IMPORTANT FIX:
+The previous V6 called restoreSession before the `supa` variable was initialized. That caused a JavaScript runtime error and stopped the application script, which made Sign In appear not to work.
+
+V7 moves session restoration to the END of the application script, after Supabase/config/application variables and functions are initialized.
+
+All requested functionality retained:
+- Assessment years 2010-11 through 2041-42.
+- Homepage bill search.
+- Working Download PDF handler.
+- Bill History -> NEW BILL.
+- Display Name is only a display/profile label.
+- Proceed disables after processing and is reset by Clear All/New Bill.
+- Supabase session is restored after refresh while valid.
+- Firm/Party placeholder is "Enter Firm / Party Name".
+- Duplicate bill protection.
+- Private bill-pdfs storage and per-user RLS/Storage isolation.
+- PWA cache bumped to V7.
+
+Before deployment:
+1. Put your Supabase Project URL and Publishable/anon key in config.js.
+2. Deploy the COMPLETE V7 folder.
+3. Test the normal browser first.
+4. Only then install/update the PWA.
