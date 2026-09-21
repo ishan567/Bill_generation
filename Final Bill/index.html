@@ -29,7 +29,7 @@ button.secondary{background:#edf1f7;color:var(--navy)}button.danger{background:#
 .status{text-align:center;min-height:20px;margin-top:10px;font-size:13px}.ok{color:var(--ok)}.err{color:var(--danger)}
 .small{font-size:12px;color:#697386;line-height:1.5}.login{max-width:460px;margin:25px auto}.hidden{display:none!important}
 .history-head{display:flex;justify-content:space-between;gap:10px;align-items:end;flex-wrap:wrap}.search{max-width:300px}
-.tablewrap{overflow:auto}.history{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.history th,.history td{padding:10px 7px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left}.history th{color:var(--navy)}
+.tablewrap{overflow:auto}.history{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.history th,.history td{padding:10px 7px;border-bottom:0;white-space:nowrap;text-align:left}.history tr{border-bottom:1px solid var(--line)}.history th{color:var(--navy)}.history-party{white-space:normal!important;word-break:normal;overflow-wrap:normal;max-width:250px;min-width:180px;line-height:1.35}
 .row-actions{display:flex;gap:6px}.row-actions button{height:34px;font-size:12px;padding:0 9px}.pill{background:#edf1f7;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750}
 @media(max-width:580px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.row{grid-template-columns:1fr 125px}.toolbar{flex-direction:column}.actions{grid-template-columns:1fr}.history-head{align-items:stretch;flex-direction:column}.search{max-width:none}}
 </style>
@@ -256,7 +256,7 @@ function renderHistory(){
  const q=$("searchBox").value.trim().toLowerCase();
  const f=historyCache.filter(b=>[b.bill_date||b.date,b.party_name||b.party,b.assessment_year||b.assessment,b.income_tax,b.gst,b.appeal,b.drafting,b.miscellaneous,JSON.stringify(b.custom_items||[]),b.total].join(" ").toLowerCase().includes(q));
  $("billCount").textContent=historyCache.length+" bill"+(historyCache.length===1?"":"s");
- $("historyBody").innerHTML=f.map((b,i)=>`<tr><td>${i+1}</td><td>${esc(b.bill_date||b.date)}</td><td>${esc(b.party_name||b.party)}</td><td>${esc(b.assessment_year||b.assessment)}</td><td>₹${Number(b.total||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="row-actions"><button class="secondary" onclick="redownload('${b.id}')">PDF</button><button class="danger" onclick="deleteBill('${b.id}')">Delete</button></td></tr>`).join("")||'<tr><td colspan="6">No bills found.</td></tr>';
+ $("historyBody").innerHTML=f.map((b,i)=>`<tr><td>${i+1}</td><td>${esc(b.bill_date||b.date)}</td><td class="history-party">${esc(b.party_name||b.party)}</td><td>${esc(b.assessment_year||b.assessment)}</td><td>₹${Number(b.total||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="row-actions"><button class="secondary" onclick="redownload('${b.id}')">PDF</button><button class="danger" onclick="deleteBill('${b.id}')">Delete</button></td></tr>`).join("")||'<tr><td colspan="6">No bills found.</td></tr>';
 }
 $("searchBox").addEventListener("input",renderHistory);
 
@@ -426,7 +426,7 @@ async function renderHomeSearch(){
  const results=historyCache.filter(b=>[b.bill_date||b.date,b.party_name||b.party,b.assessment_year||b.assessment,b.income_tax,b.gst,b.appeal,b.drafting,b.miscellaneous,JSON.stringify(b.custom_items||[]),b.total].join(" ").toLowerCase().includes(q));
  $("searchResults").classList.remove("hidden");
  $("searchCount").textContent=results.length+" bill"+(results.length===1?"":"s");
- $("searchBody").innerHTML=results.map((b,i)=>`<tr><td>${i+1}</td><td>${esc(b.bill_date||b.date)}</td><td>${esc(b.party_name||b.party)}</td><td>${esc(b.assessment_year||b.assessment)}</td><td>₹${Number(b.total||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="row-actions"><button class="secondary" onclick="redownload('${b.id}')">PDF</button></td></tr>`).join("")||'<tr><td colspan="6">No matching bills found.</td></tr>';
+ $("searchBody").innerHTML=results.map((b,i)=>`<tr><td>${i+1}</td><td>${esc(b.bill_date||b.date)}</td><td class="history-party">${esc(b.party_name||b.party)}</td><td>${esc(b.assessment_year||b.assessment)}</td><td>₹${Number(b.total||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="row-actions"><button class="secondary" onclick="redownload('${b.id}')">PDF</button></td></tr>`).join("")||'<tr><td colspan="6">No matching bills found.</td></tr>';
 }
 $("homeSearch")?.addEventListener("input",()=>{renderHomeSearch();});
 

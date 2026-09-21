@@ -1,0 +1,31 @@
+FINAL PDF COORDINATE FIX — VERIFIED
+
+Root cause:
+The final coordinates supplied by the user are PDF points. The previous browser
+generator incorrectly multiplied them by the rendered JPEG scale, which could move
+the overlay into the wrong location.
+
+Correction:
+- Blank 4.pdf is the clean authoritative template.
+- The template is rendered to a genuine JPEG only for embedding.
+- Overlay X coordinates are now used directly as PDF points.
+- Overlay Y coordinates are converted from the user's top-left Y to PDF bottom-left
+  baseline using the Times-Bold font size.
+- No scaling is applied to the user coordinates.
+- No white rectangles are used.
+- Every generation starts from the clean Blank 4 template.
+
+Final coordinates:
+Date: 465.00, 227.50, Times-Bold 18 pt
+Firm/Party Name: 207.75, 259.75, Times-Bold 24 pt
+Assessment Year: 344.40, 340.73, Times-Bold 24 pt
+Income Tax / Assessment: 477.00, 424.00, Times-Bold 18 pt
+G.S.T: 477.00, 489.14, Times-Bold 18 pt
+Appeal: 477.00, 554.54, Times-Bold 18 pt
+Drafting: 477.00, 620.43, Times-Bold 18 pt
+Miscellaneous: 477.00, 684.84, Times-Bold 18 pt
+Total: 473.00, 727.04, Times-Bold 18 pt
+
+Independent PDF test:
+All 9 sample values were inserted and read back successfully at the expected
+top-left coordinates with Times-Bold at the requested sizes.

@@ -1,0 +1,6 @@
+FINAL PARTY NAME UPDATE
+- First line remains X=207.75 pt, Y=259.75 pt, Times-Bold 24 pt.
+- Second line is X=130.00 pt, Y=298.00 pt.
+- Party/Firm names are split only at word boundaries; words are never split across lines.
+- If a long name needs two lines, font size is reduced only as needed to make both lines fit.
+- No character-level splitting is used.
