@@ -1,6 +1,0 @@
-FINAL TWO CHANGES UPDATE
-
-1. Amount inputs now display "Amount" as the placeholder in all five fixed amount fields, matching the custom amount fields.
-2. Firm / Party Name PDF output now remains within the template border. It stays at 24 pt when it fits on one line. If it would exceed the available width, it wraps to a maximum of two lines; only in that case the font size is reduced as needed so both lines fit within the border. The second line uses the existing second dotted-line area.
-3. No other bill coordinates, template artwork, custom-particular row positions, calculation logic, or database behavior were changed.
-4. Service worker cache version was incremented only to ensure the updated index.html is loaded after deployment.
