@@ -1,0 +1,18 @@
+AUTHORITATIVE PDF: Blank 4.pdf
+
+Generation rule:
+1. Start every new PDF from the clean Blank 4 master.
+2. Do not rewrite, cover, or modify existing template artwork.
+3. Overlay only current user data at the final coordinates.
+4. Amounts display two decimals; nil/empty service amounts display N/A.
+
+Final coordinates:
+Date 465.00, 227.50, Times-Bold 18 pt
+Firm/Party Name 207.75, 259.75, Times-Bold 24 pt
+Assessment Year 344.40, 340.73, Times-Bold 24 pt
+Income Tax / Assessment 477.00, 424.00, Times-Bold 18 pt
+G.S.T 477.00, 489.14, Times-Bold 18 pt
+Appeal 477.00, 554.54, Times-Bold 18 pt
+Drafting 477.00, 620.43, Times-Bold 18 pt
+Miscellaneous 477.00, 684.84, Times-Bold 18 pt
+Total 473.00, 727.04, Times-Bold 18 pt
