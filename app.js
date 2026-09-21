@@ -1,111 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#102957">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Bill Generator">
-<link rel="manifest" href="manifest.webmanifest">
-<title>Sanjay Kumar Gupta — Bill Generator</title>
-<style>
-:root{--navy:#102957;--bg:#f4f6fa;--line:#d8deea;--ok:#087443;--danger:#b42318}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#152033}
-main{max-width:760px;margin:auto;padding:14px}
-header{background:var(--navy);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px}
-header h1{margin:0;font-size:21px}header p{margin:5px 0 0;font-size:13px;opacity:.9}
-.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.toolbar button{width:100%;min-height:48px}
-.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 5px 24px #10295712;margin-bottom:12px}
-h2{font-size:17px;color:var(--navy);margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
-label{display:block;font-size:13px;font-weight:750;margin-bottom:6px}
-input{width:100%;height:46px;border:1px solid var(--line);border-radius:9px;padding:0 12px;font-size:16px;background:#fff}
-.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}.row{display:grid;grid-template-columns:1fr 160px;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
-.name{padding:14px;font-size:14px;font-weight:650}.custom-name{border:0;border-radius:0;background:#fff;font-weight:650}.custom-name::placeholder{font-weight:500;color:#9aa4b2}.amount{border:0;border-left:1px solid var(--line);border-radius:0}.custom-row .amount::placeholder{color:#9aa4b2}
-.total{display:flex;justify-content:space-between;padding:17px 2px;font-size:19px;font-weight:800}
-button{height:48px;border:0;border-radius:10px;background:var(--navy);color:#fff;font-size:14px;font-weight:800;padding:0 14px;cursor:pointer;transition:transform .08s ease,opacity .12s ease,box-shadow .12s ease}
-button:active,.clicked{transform:scale(.96);box-shadow:0 0 0 3px #10295722}button:disabled{opacity:.55;cursor:not-allowed}button.clicked{transform:scale(.95);box-shadow:0 0 0 3px #10295722}
-button.secondary{background:#edf1f7;color:var(--navy)}button.danger{background:#fff0ee;color:var(--danger)}
-#postProceed{display:none;margin-top:10px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.status{text-align:center;min-height:20px;margin-top:10px;font-size:13px}.ok{color:var(--ok)}.err{color:var(--danger)}
-.small{font-size:12px;color:#697386;line-height:1.5}.login{max-width:460px;margin:25px auto}.hidden{display:none!important}
-.history-head{display:flex;justify-content:space-between;gap:10px;align-items:end;flex-wrap:wrap}.search{max-width:300px}
-.tablewrap{overflow:auto}.history{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.history th,.history td{padding:10px 7px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left}.history th{color:var(--navy)}
-.row-actions{display:flex;gap:6px}.row-actions button{height:34px;font-size:12px;padding:0 9px}.pill{background:#edf1f7;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750}
-@media(max-width:580px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.row{grid-template-columns:1fr 125px}.toolbar{flex-direction:column}.actions{grid-template-columns:1fr}.history-head{align-items:stretch;flex-direction:column}.search{max-width:none}}
-</style>
-</head>
-<body>
-<main>
-<header><h1>Sanjay Kumar Gupta — Bill Generator</h1><p>Simple bill creation • PDF • WhatsApp • History</p></header>
 
-<section id="startCard" class="card login">
-<h2>Sign In</h2>
-<label>User ID / Email</label><input id="userId" type="email" autocomplete="username" placeholder="Enter User ID / Email">
-<label style="margin-top:10px">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
-<label style="margin-top:10px">Display Name</label><input id="profileName" type="text" autocomplete="name" placeholder="Name shown in the app">
-<button id="startBtn" style="width:100%;margin-top:12px">SIGN IN / START</button>
-<div id="startStatus" class="status"></div><p class="small">Display Name is only for identifying the signed-in user in the app. Your User ID/password controls access to your bills.</p>
-</section>
-<section id="app" class="hidden">
-<div class="card" style="padding:12px;margin-bottom:10px"><label for="homeSearch">SEARCH GENERATED BILLS</label><input id="homeSearch" placeholder="Search party, date, assessment year, amount..."><div id="profileWelcome" class="small" style="margin-top:6px"></div></div>
-<div class="toolbar">
-  <button id="newBtn">NEW BILL</button>
-  <button id="historyBtn" class="secondary">BILL HISTORY</button>
-</div>
-
-<section id="searchResults" class="card hidden">
-<div class="history-head"><div><h2 style="margin-bottom:5px">Search Results</h2><span id="searchCount" class="pill">0 bills</span></div></div>
-<div class="tablewrap" style="margin-top:12px"><table class="history"><thead><tr><th>#</th><th>Date</th><th>Party Name</th><th>Assessment Year</th><th>Total</th><th>Actions</th></tr></thead><tbody id="searchBody"></tbody></table></div>
-</section>
-<section id="newSection" class="card">
-<h2>Bill Details</h2>
-<div class="grid">
-<div><label>Date</label><input id="date" inputmode="numeric"></div>
-<div><label>Assessment Year</label><input id="assessmentYear" list="years" placeholder="Select or type">
-<datalist id="years"></datalist></div>
-<div class="full"><label>Firm / Party Name</label><input id="partyName" placeholder="Enter Firm / Party Name"></div>
-</div>
-<h2 style="margin-top:24px">Amounts</h2>
-<div class="rows">
-<div class="row"><div class="name">Income Tax / Assessment</div><input id="incomeTax" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row custom-row"><input id="customParticular1" class="name custom-name" type="text" placeholder="Enter Particular (optional)"><input id="customAmount1" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row"><div class="name">G.S.T</div><input id="gst" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row custom-row"><input id="customParticular2" class="name custom-name" type="text" placeholder="Enter Particular (optional)"><input id="customAmount2" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row"><div class="name">Appeal</div><input id="appeal" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row custom-row"><input id="customParticular3" class="name custom-name" type="text" placeholder="Enter Particular (optional)"><input id="customAmount3" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row"><div class="name">Drafting</div><input id="drafting" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row custom-row"><input id="customParticular4" class="name custom-name" type="text" placeholder="Enter Particular (optional)"><input id="customAmount4" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-<div class="row"><div class="name">Miscellaneous</div><input id="miscellaneous" class="amount" type="number" min="0" step=".01" placeholder="Amount"></div>
-</div>
-<div class="total"><span>Total</span><span id="total">₹0.00</span></div>
-
-<button id="clearBtn" class="secondary" style="width:100%;margin-top:6px">CLEAR ALL</button>
-<!-- Only Proceed is visible initially. Download and WhatsApp appear after Proceed succeeds. -->
-<button id="proceedBtn" style="width:100%;margin-top:8px">PROCEED / DONE</button>
-<div id="postProceed" class="actions">
-  <button id="downloadBtn">DOWNLOAD PDF</button>
-  <button id="shareBtn" class="secondary">SHARE / WHATSAPP</button>
-</div>
-<div id="billStatus" class="status"></div>
-<p class="small">Clicking PROCEED / DONE generates the final PDF and saves the bill to history first. Download and Share then become available.</p>
-</section>
-
-<section id="historySection" class="card hidden">
-<div class="history-head">
-<div><h2 style="margin-bottom:5px">Bill History</h2><span id="billCount" class="pill">0 bills</span></div>
-<div><label for="searchBox">Search</label><input id="searchBox" class="search" placeholder="Party, date, assessment"></div>
-</div>
-<div class="tablewrap" style="margin-top:14px"><table class="history">
-<thead><tr><th>#</th><th>Date</th><th>Party Name</th><th>Assessment Year</th><th>Total</th><th>Actions</th></tr></thead>
-<tbody id="historyBody"></tbody></table></div>
-<div id="historyStatus" class="status"></div>
-</section>
-</main>
-
-<script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script>
 
 
 
@@ -176,7 +69,7 @@ async function buildPDF(b){
  function put(t,k){const [px,py,size,a]=F[k];const amountKeys=["incomeTax","gst","appeal","drafting","miscellaneous","total","customAmount1","customAmount2","customAmount3","customAmount4"];const s=amountKeys.includes(k)?(String(t)==="N/A"?"N/A":num(t).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})):String(t??"");if(!s)return;const w=font.widthOfTextAtSize(s,size);let x=px;if(a=="r")x-=w;if(a=="c")x-=w/2;const baselineOffset=size*1.044;page.drawText(s,{x,y:pageH-(py+baselineOffset),size,font,color})}
  function wrapPartyName(text){
   const raw=String(text??"").trim(); if(!raw)return;
-  const startX=F.party[0], maxRight=560, maxWidth=maxRight-startX, maxSize=F.party[2], minSize=16, step=0.5;
+  const startX=F.party[0], maxRight=560, maxWidth=maxRight-startX, maxSize=F.party[2], minSize=10;
   const widthAt=(s,z)=>font.widthOfTextAtSize(s,z);
   if(widthAt(raw,maxSize)<=maxWidth){ put(raw,"party"); return; }
   function splitForSize(text,size){
@@ -185,6 +78,7 @@ async function buildPDF(b){
    if(words.length>1){
     for(let i=1;i<words.length;i++) candidates.push([words.slice(0,i).join(" "),words.slice(i).join(" ")]);
    }
+   for(let i=1;i<text.length;i++) candidates.push([text.slice(0,i).trim(),text.slice(i).trim()]);
    let best=null;
    for(const pair of candidates){
     if(!pair[0]||!pair[1])continue;
@@ -198,21 +92,19 @@ async function buildPDF(b){
    }
    return best?.pair||null;
   }
-  for(let z=maxSize;z>=minSize;z-=step){
+  for(let z=maxSize;z>=minSize;z-=0.25){
    const pair=splitForSize(raw,z);
    if(pair){
     const baselineOffset=z*1.044;
     page.drawText(pair[0],{x:startX,y:pageH-(F.party[1]+baselineOffset),size:z,font,color});
-    page.drawText(pair[1],{x:130.00,y:pageH-(298.00+baselineOffset),size:z,font,color});
+    page.drawText(pair[1],{x:startX,y:pageH-(292.75+baselineOffset),size:z,font,color});
     return;
    }
   }
-  let z=minSize, pair=splitForSize(raw,z);
-  while(!pair && z>=8){ z-=step; pair=splitForSize(raw,z); }
-  if(!pair){ pair=[raw,""]; }
+  const z=minSize; const pair=splitForSize(raw,z)||[raw.slice(0,Math.ceil(raw.length/2)),raw.slice(Math.ceil(raw.length/2))];
   const baselineOffset=z*1.044;
   page.drawText(pair[0],{x:startX,y:pageH-(F.party[1]+baselineOffset),size:z,font,color});
-  if(pair[1]) page.drawText(pair[1],{x:130.00,y:pageH-(298.00+baselineOffset),size:z,font,color});
+  page.drawText(pair[1],{x:startX,y:pageH-(292.75+baselineOffset),size:z,font,color});
  }
  put(b.date,"date");wrapPartyName(b.partyName);put(b.assessmentYear,"assessment");
  [["incomeTax",b.incomeTax],["gst",b.gst],["appeal",b.appeal],["drafting",b.drafting],["miscellaneous",b.miscellaneous]].forEach(([k,n])=>{const v=num(n);put(v>0?v.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}):"N/A",k)});
@@ -474,6 +366,3 @@ async function restoreSessionV7(){
 populateAssessmentYearsV5();
 restoreSessionV7();
 
-</script>
-</body>
-</html>
