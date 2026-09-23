@@ -1,0 +1,12 @@
+FINAL V23 — PDF SOI/JPEG FIX
+
+Root cause confirmed:
+assets/master_bill_final.jpg had a .jpg filename but its actual file bytes were PNG.
+pdf-lib's JPEG decoder expects the JPEG SOI marker (FF D8), so PDF generation failed with:
+"SOI not found in JPEG".
+
+Fix:
+- Converted master_bill_final.jpg to a genuine RGB JPEG.
+- Kept the same master artwork/content.
+- No application logic, PDF coordinates, login, history, search, or GST functionality was changed.
+- JavaScript syntax check passes.

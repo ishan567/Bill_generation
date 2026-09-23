@@ -1,0 +1,21 @@
+FINAL CUSTOM PARTICULARS VERIFICATION
+
+Verified in this build:
+PASS - Latest Extra Final PDF remains assets/Blank_4.pdf.
+PASS - Four editable blank Particular rows are present between the five fixed Particulars.
+PASS - Each editable row has a user-entered Particular field and a user-entered Amount field.
+PASS - Editable rows are positioned at equal midpoints between fixed rows in the generated PDF.
+PASS - Each custom amount uses the same horizontal Amount-column center (X=508.379 pt) and the same row Y as its Particular.
+PASS - If a custom Particular is blank, no Particular text is drawn.
+PASS - If a custom Amount is blank, no Amount text is drawn.
+PASS - If both custom fields are blank, the entire custom row remains blank in the PDF.
+PASS - Custom amounts are included in Total.
+PASS - Custom rows are disabled after Proceed and re-enabled/cleared by Clear All and New Bill.
+PASS - Custom rows are included in duplicate detection.
+PASS - Custom rows are included in history/search data through custom_items JSONB.
+PASS - Existing fixed particulars and their existing PDF amount behavior remain unchanged.
+PASS - JavaScript syntax check passed.
+PASS - Sample PDF includes the approved custom-particular sample and total 16,450.00.
+
+SUPABASE REQUIREMENT
+Run SUPABASE_CUSTOM_PARTICULARS_MIGRATION.sql once in the existing Supabase project before using cloud save/history with custom particulars.
